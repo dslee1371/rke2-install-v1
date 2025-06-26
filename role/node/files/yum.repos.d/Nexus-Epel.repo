@@ -1,6 +1,6 @@
 [Epel]
 name=Rocky Linux $releasever - Epel
-baseurl=http://10.71.163.68:8081/repository/yum-proxy-rocky-epel-8
+baseurl=http://172.10.30.11:8081/repository/yum-proxy-rocky-epel-8
 
 gpgcheck=0
 enabled=1
