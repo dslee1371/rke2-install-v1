@@ -1,0 +1,16 @@
+# namespace 생성 
+- name: "[ STEP 4 ] # 1. Make Root Directory"
+  shell: kubectl create ns {{JENKINS_NAMESPACE}}
+  ignore_errors: yes
+
+# pv, sa 생성 (persistentvolume, storageclass)
+- name: "[ STEP 4 ] # 2. create pv, sa "
+  shell: |
+    cd {{TEMP_DIR_PATH}}/jenkins
+    kubectl apply -f jenkins-sa.yaml
+
+# Jenkins helm chart 설치 
+- name: "[ STEP 4 ] # 3. helm install "
+  shell: |
+    cd {{TEMP_DIR_PATH}}/jenkins
+    helm install {{JENKINS_RELEASE}} . -f jenkins-values.yaml -n {{JENKINS_NAMESPACE}}

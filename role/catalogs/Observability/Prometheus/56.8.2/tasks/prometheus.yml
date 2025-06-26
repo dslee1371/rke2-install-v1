@@ -1,0 +1,47 @@
+---
+- name: 8.3.1. Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin12341234 --insecure-skip-tls-verify"
+  ignore_errors: yes
+
+- name: 8.3.2. Update Helm repositories
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo update"
+
+- name: 8.3.3. Make necessary directories
+  ansible.builtin.shell:
+    cmd: "mkdir -p /prometheus /grafana"    
+
+- name: 8.3.4. Copy Values.yaml file for Prometheus to remote host
+  ansible.builtin.copy:
+    src: "files/values.yaml"
+    dest: "/prometheus/values.yaml"
+
+- name: 8.3.5. Install Prometheus
+  ansible.builtin.shell:
+    cmd: |
+      helm upgrade -i prometheus cnstudio/kube-prometheus-stack \
+        --namespace monitoring \
+        --create-namespace \
+        --version={{ PROMETHEUS_VERSION }} \
+        --set grafana.ingress.enabled=true \
+        --set grafana.adminPassword=admin1234 \
+        --set prometheus.ingress.enabled=true \
+        --set prometheus.ingress.hosts="{prometheus.{{ DOMAIN_NAME }}}" \
+        --set grafana.ingress.hosts="{grafana.{{ DOMAIN_NAME }}}" \
+        --set prometheus.prometheusSpec.scrapeInterval=30s \
+        --set prometheus.prometheusSpec.evaluationInterval=30s \
+        -f /prometheus/values.yaml
+
+
+        #           --set prometheusOperator.nodeSelector."storage"="true" \
+        # --set prometheus.prometheusSpec.nodeSelector."storage"="true" \
+#- name: copy custom-dashboard.yaml file for Prometheus to remote host
+#  ansible.builtin.copy:
+#    src: "files/custom-dashboard.yml"
+#    dest: "/grafana/custom-dashboard.yml"       
+
+#- name: add Custom Dashboards
+#  ansible.builtin.shell:
+#    cmd: |        
+#     kubectl apply -f /grafana/custom-dashboard.yml

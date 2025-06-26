@@ -1,0 +1,25 @@
+---
+# defaults file for jenkins
+
+#고정변수
+TEMP_DIR_PATH: /home/ssm-user/tmp
+
+#유동변수
+JENKINS_RELEASE: jenkins
+JENKINS_NAMESPACE: jenkins
+
+JENKINS_VERSION: "5.1.23"
+
+JENKINS_PV_NAME: jenkins-pv
+JENKINS_SA_NAME: jenkins
+JENKINS_CLUSTERROLE_NAME: jenkins
+JENKINS_CLUSTERROLEBINDING_NAME: jenkins
+JENKINS_STORAGECLASS_NAME: longhorn
+JENKINS_STORAGE_SIZE: 20Gi
+JENKINS_STORAGE_MOUNT_PATH: /data/jenkins-volume/
+JENKINS_DATA_NODE: rke2-worker-node01
+
+
+JENKINS_URI_PREFIX: ""
+
+

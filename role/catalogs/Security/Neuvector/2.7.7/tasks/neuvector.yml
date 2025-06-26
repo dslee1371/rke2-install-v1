@@ -1,0 +1,25 @@
+---
+- name: 8.15.1. Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin1234"
+  ignore_errors: yes
+  
+- name: 8.15.2. Update Helm repositories
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo update"
+
+- name: 8.15.3. Install neuvector
+  ansible.builtin.shell:
+    cmd: |
+      /usr/local/bin/helm install neuvector \
+      --namespace neuvector cnstudio/core \
+      --create-namespace \
+      --set manager.ingress.enabled=true \
+      --set controller.pvc.enabled=true \
+      --set controller.pvc.capacity=10Gi \
+      --set manager.svc.type=ClusterIP \
+      --set registry={{ NEXUS_REGISTRY_URL }} \
+      --set tag=5.3.3 \
+      --set manager.ingress.host="neuvector.{{DOMAIN_NAME }}" \
+      --set k3s.enabled=true \
+      --set cve.updater.enabled=false

@@ -1,0 +1,29 @@
+---
+- name: Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin12341234 --insecure-skip-tls-verify"
+  ignore_errors: yes
+
+- name: Update Helm repositories
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo update"
+
+- name: make necessary directories
+  ansible.builtin.shell:
+    cmd: "mkdir -p /jenkins"    
+
+- name: Setting Values.yaml file for Jenkins
+  ansible.builtin.copy:
+    src: "files/jenkins-values.yaml"
+    dest: "/jenkins/jenkins-values.yaml"
+
+- name: Install Jenkins
+  ansible.builtin.shell:
+    cmd: |
+      helm upgrade -i jenkins cnstudio/jenkins \
+         --namespace jenkins \
+         --create-namespace \
+         --version={{ JENKINS_VERSION }} \
+         --set controller.ingress.enabled=true \
+         --set controller.ingress.hostName="jenkins.{{ DOMAIN_NAME }}" \
+         -f /jenkins/jenkins-values.yaml

@@ -1,0 +1,46 @@
+- name: 8.4.1. Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin12341234 --insecure-skip-tls-verify"
+  tags:
+    - catalog_opensearch
+
+
+- name: 8.4.2. Install opensearch helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install opensearch {{ HELM_REPO_NAME }}/opensearch \
+      --namespace logging --create-namespace \
+      -f {{ role_path }}/files/opensearch_values.yaml
+  tags:
+    - catalog_opensearch
+
+- name: 8.4.3. Install opensearch dashboard helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install opensearch-dashboards {{ HELM_REPO_NAME }}/opensearch-dashboards \
+      --namespace logging \
+      --set opensearchHosts="https://opensearch-cluster-master.logging.svc.cluster.local:9200" \
+      --set ingress.enabled=true \
+      --set ingress.hosts[0].host="opensearch-dashboards.cnstudio.kt.com" \
+      --set ingress.hosts[0].paths[0].path="/" \
+      --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific" \
+      --set ingress.hosts[0].paths[0].backend.serviceName="" \
+      --set ingress.hosts[0].paths[0].backend.servicePort=""
+  tags:
+    - catalog_opensearch
+
+- name: 8.4.4. Install fluent-bit helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install fluent-bit {{ HELM_REPO_NAME }}/fluent-bit \
+      --namespace logging \
+      -f {{ role_path }}/files/fluent-bit_values.yaml
+  tags:
+    - catalog_opensearch     
+
+#- name: Create vertualservice as manifest
+#  ansible.builtin.command:
+#    cmd: |
+#      kubectl create -f {{ role_path }}/files/virtual-service.yaml
+#  tags:
+#    - catalog_opensearch 

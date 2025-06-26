@@ -1,0 +1,6 @@
+# Jenkins helm chart 삭제
+- name: "[ STEP 99 ] # Jenkins uninstall "
+  shell: |
+    helm uninstall {{JENKINS_RELEASE}} -n {{JENKINS_NAMESPACE}}
+    kubectl delete pv,sa,sc,clusterrole,clusterrolebinding -n {{JENKINS_NAMESPACE}} -l release={{JENKINS_RELEASE}}
+    kubectl delete ns {{JENKINS_NAMESPACE}}

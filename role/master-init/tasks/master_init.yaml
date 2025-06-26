@@ -1,0 +1,98 @@
+## System kernel params
+- name: 3.1. Copy Kernel Params
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+- name: 3.2. apply Kernel Params
+  shell: |
+    sysctl -p /etc/sysctl.conf
+
+## RKE2 install
+- name: 3.3. Uninstall RKE2
+  shell: rke2-uninstall.sh
+  ignore_errors: True
+
+- name: 3.4. Install and set RKE2
+  shell: INSTALL_RKE2_TYPE=server INSTALL_RKE2_ARTIFACT_PATH="{{ LOCAL_PATH.BASE }}/packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ LOCAL_PATH.BASE }}/packages/rancher/install.sh
+
+## Configure Private registry
+- name: 3.5. Create directories(Docker, RKE2, containerd)
+  file:
+    path: "{{ item.DIR }}"
+    state: directory
+  with_items: "{{ REGISTRY_CONFIG }}"
+
+- name: 3.6. Set private repo for (Docker, RKE2, containerd)
+  copy:
+    dest: "{{ item.DIR }}/{{ item.FILE }}"
+    content: "{{ item.CONTENT }}"
+  with_items: "{{ REGISTRY_CONFIG }}"
+
+## RKE2 configuration file
+- name: 3.7. Make necessary directories
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+
+- name: 3.8. Add the content to the file
+  copy:
+    dest: /etc/rancher/rke2/config.yaml
+    content: |
+      write-kubeconfig-mode: "0644"
+      tls-san:
+        - {{ ALL_Servers[0].ip }}
+      etcd-expose-metrics: true
+
+## Run RKE2 Service 
+- name: 3.9. Enable and start the rke2-server service
+  systemd_service:
+    name: rke2-server
+    state: started
+    enabled: true
+  register: "check_rke2server_state"
+
+
+- name: 3.10. Print rke2-server service status
+  debug:
+    msg: "{{ check_rke2server_state }}"
+
+## Configure file
+- name: 3.11. Make log directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - $HOME/.kube
+    - "/home/{{ USER }}/.kube"
+
+- name: 3.12. Set Up Kubeconfig
+  copy:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: "{{ item }}"
+    mode: 0600
+    owner: "{{ USER }}"
+    remote_src: yes
+  with_items:
+    - $HOME/.kube/config
+    - "/home/{{ USER }}/.kube/config"
+
+## File fetch
+- name: 3.13. Copy node token from the master to the controller
+  fetch:
+    src: "/var/lib/rancher/rke2/server/token"
+    dest: "{{ LOCAL_PATH.BASE }}/node-token/token"
+    flat: yes
+
+- name: 3.14. Copy kube config file from the master to the controller
+  fetch:
+    src: $HOME/.kube/config
+    dest: "{{ LOCAL_PATH.BASE }}/kubeconfig"
+    flat: yes
+
+- name: 3.15. Copy kubectl file from master to the controller
+  fetch:
+    src: /var/lib/rancher/rke2/bin/kubectl
+    dest: "{{ LOCAL_PATH.BASE }}/kubectl"
+    flat: yes
+

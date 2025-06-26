@@ -1,0 +1,33 @@
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{JENKINS_PV_NAME}}
+  namespace: {{JENKINS_NAMESPACE}}
+  labels: 
+    release: {{JENKINS_RELEASE}}
+  annotations:
+    pv.beta.kubernetes.io/gid: "1000"
+spec:
+  storageClassName: {{JENKINS_STORAGECLASS_NAME}}
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: {{JENKINS_STORAGE_SIZE}}
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: {{JENKINS_STORAGE_MOUNT_PATH}}/jenkins-volume
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - { key: kubernetes.io/hostname, operator: In, values: [{{JENKINS_DATA_NODE}}]}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{JENKINS_STORAGECLASS_NAME}}
+  labels: 
+    release: {{JENKINS_RELEASE}}
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

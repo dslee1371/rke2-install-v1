@@ -1,0 +1,77 @@
+### ! GitLab Helm Chart Configuraton
+# ? GitLab Suffix Domain 
+GITLAB_SUFFIX_DOMAIN: cnstudio.com
+
+# ? GitLab Helm Chart Repository
+#GITLAB_HELM_REPOSITORY_URL: https://charts.gitlab.io/
+GITLAB_HELM_REPOSITORY_URL: {{ NEXUS_REGISTRY_URL }}
+# ? GitLab Helm Chart Version 
+GITLAB_HELM_VERSION: "7.11.2"
+
+GITLAB_HELM_VALUES:
+  CERTMANAGER_ISSUER:
+    EMAIL: example@example.com
+### !
+
+### ! GitLab Installation Metadata
+# ? GitLab Release Label
+GITLAB_METADATA_RELEASE_LABEL: gitlab
+
+# ? GitLab Install Target Namespace
+GITLAB_METADATA_NAMESPACE: gitlab
+### !
+
+### ! GitLab Root Account Configuration
+# ? GitLab Root Account Password
+GITLAB_ACCOUNT_ROOT_PASSWORD: password
+
+# ? GitLab Root Personal Access Token 
+GITLAB_ACCOUNT_ROOT_ACCESS_TOKEN_NAME: InitializeToken
+GITLAB_ACCOUNT_ROOT_ACCESS_TOKEN_VALUE: InitializeToken 
+### !
+
+### ! GitLab Persistent Volume Configuration
+# ? GitLab Global Pod Node Selector Configuration
+GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY: worker
+GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE: true
+
+# ? GitLab Installation with Sample Source Code
+GITLAB_PERSISTENT_INCLUDE_SAMPLE_SOURCE: yes
+GITLAB_PERSISTENT_INCLUDE_ALL_GITOPS_SAMPLE_SOURCE: yes
+
+GITLAB_PERSISTENT_INCLUDE_JAVA_SAMPLE_SOURCE: "yes"
+
+GITLAB_PERSISTENT_INCLUDE_NODEJS_SAMPLE_SOURCE: "yes"
+
+GITLAB_PERSISTENT_INCLUDE_PYTHON_SAMPLE_SOURCE: "yes"
+
+GITLAB_PERSISTENT_INCLUDE_API_GATEWAY_SAMPLE_SOURCE: "yes"
+
+GITLAB_PERSISTENT_INCLUDE_GITOPS_SAMPLE_SOURCE: "yes"
+
+# ? GitLab Data Volume Path (Root)
+GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH: /data/gitlab-volume
+
+######################################## * 하위 변수들은 default values로 위치예정 * ########################################
+
+# ? GitLab Gitaly Pod Node Selector Configuration
+GITLAB_PERSISTENT_GITALY_POD_NODE_SELECTOR_KEY: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY}}"
+GITLAB_PERSISTENT_GITALY_POD_NODE_SELECTOR_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE}}"
+
+# ? GitLab Gitaly Persistent Volume Node Affinity Configuration (Target Node Name)
+GITLAB_PERSISTENT_GITALY_STORAGE_NODE_AFFINITY_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE}}"
+
+# ? GitLab Gitaly Volume Configuration
+GITLAB_PERSISTENT_GITALY_STORAGE_MOUNT_PATH: "{{GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH}}"
+GITLAB_PERSISTENT_GITALY_STORAGE_SIZE: 5Gi
+
+######################################## * 하위 변수들은 default values로 위치예정 * ########################################
+
+#############################################################################################################################
+
+### ! GitLab Runner
+GITLAB_RUNNER_INSTALLATION: true
+GITLAB_RUNNER_GITLAB_WEBSERVICE_DOMAIN: "gitlab.{{GITLAB_SUFFIX_DOMAIN}}"
+
+GITLAB_RUNNER_REPLICASE: 5
+### !

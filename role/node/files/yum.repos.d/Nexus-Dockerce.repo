@@ -1,0 +1,6 @@
+[Dockerce]
+name=Rocky Linux $releasever - Docker-ce
+baseurl=http://10.71.163.68:8081/repository/yum-proxy-rocky-dockerce/
+
+gpgcheck=0
+enabled=1

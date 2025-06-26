@@ -1,0 +1,3 @@
+- name: 1. Congifure the control server
+  include_tasks: control.yaml
+

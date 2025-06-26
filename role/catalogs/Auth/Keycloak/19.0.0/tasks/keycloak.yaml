@@ -1,0 +1,45 @@
+---
+
+######## keycloak #########
+
+- name: Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin12341234 --insecure-skip-tls-verify"
+  tags:
+    - keycloak
+  
+- name: Update Helm repositories
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo update"
+  tags:
+    - keycloak
+
+
+- name:  keycloak 설치
+  shell: |
+   /usr/local/bin/helm upgrade -i  keycloak cnstudio/keycloak --version 19.0.0  \
+      --namespace keycloak \
+      --create-namespace \
+      --set auth.adminUser=admin \
+      --set auth.adminPassword=admin1234 \
+      --set global.storageClass=longhorn \
+      --set ingress.enabled=true \
+      --set ingress.hostname="keycloak.{{DOMAIN_NAME}}" 
+  register: output
+  tags:
+    - keycloak
+
+
+#- name: keycloak ingress 설치 
+#  shell: |
+#    kubectl apply -f files/keycloak-ingress.yaml
+#  register: output
+#  tags: 
+#    - keycloak
+#    - keycloak-ingress
+
+- debug:
+    var: output
+  tags: 
+    - keycloak
+    - keycloak-ingress

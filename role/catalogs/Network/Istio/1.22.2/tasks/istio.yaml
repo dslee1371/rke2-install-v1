@@ -1,0 +1,59 @@
+- name: 8.21.1. Deploy istio crd helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install istio-base cnstudio/base \
+      --namespace istio-system --create-namespace \
+      --set defaultRevision=default 
+  tags:
+    - catalog_istio
+
+- name: 8.21.2. eploy istio core helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install istiod  {{ HELM_REPO_NAME }}/istiod \
+      --namespace istio-system 
+  tags:
+    - catalog_istio
+
+- name: 8.21.3. Deploy istio gateway helm chart
+  ansible.builtin.shell:
+    cmd: |
+      helm install istio-ingress {{ HELM_REPO_NAME }}/gateway \
+      --namespace istio-system \
+      -f /{{ role_path }}/files/values.yaml
+  tags:
+    - catalog_istio
+
+- name: 8.21.4. Create Certifacte secret
+  ansible.builtin.shell:
+    cmd: |
+      kubectl create -n istio-system secret tls tls-credential --key {{ role_path }}/files/tls.key --cert {{ role_path }}/files/tls.crt
+  tags:
+    - catalog_istio
+
+- name: 8.21.5. Deploy istio gateway ingress manifest
+  ansible.builtin.shell:
+    cmd: |
+      kubectl create -f {{ role_path }}/files/ingress-gateway.yaml
+  tags:
+    - catalog_istio
+
+- name: 8.21.6. Create namespace for istio adddon
+  ansible.builtin.shell:
+    cmd: |
+      kubectl create namespace bookinfo
+  tags:
+    - catalog_istio
+
+- name: 8.21.7. Deploy istio addon and bookinfo
+  ansible.builtin.shell:
+    cmd: |
+      kubectl create -f {{ role_path }}/files/addon
+  tags:
+    - catalog_istio
+- name: 8.21.8. haproxy change ingress to istio
+  ansible.builtin.shell:
+    cmd: |
+      {{ LOCAL_PATH.BASE }}/haproxy/select-haproxy.cfg istio
+  tags:
+    - catalog_istio

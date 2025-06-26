@@ -1,0 +1,281 @@
+## UI에서 받는 값 이쪽에 넣기.
+
+
+
+### ! GitLab Helm Chart Configuraton
+
+# ? GitLab Suffix Domain 
+
+GITLAB_SUFFIX_DOMAIN: cnstudio.com
+
+
+
+# ? GitLab Helm Chart Repository
+
+GITLAB_HELM_REPOSITORY_URL: https://charts.gitlab.io/
+
+
+
+# ? GitLab Helm Chart Version 
+
+GITLAB_HELM_VERSION: "7.11.2"
+
+
+
+GITLAB_HELM_VALUES:
+
+  CERTMANAGER_ISSUER:
+
+    EMAIL: example@example.com
+
+### !
+
+
+
+### ! GitLab Installation Metadata
+
+# ? GitLab Release Label
+
+GITLAB_METADATA_RELEASE_LABEL: gitlab
+
+
+
+# ? GitLab Install Target Namespace
+
+GITLAB_METADATA_NAMESPACE: gitlab
+
+### !
+
+
+
+### ! GitLab Root Account Configuration
+
+# ? GitLab Root Account Password
+
+GITLAB_ACCOUNT_ROOT_PASSWORD: password
+
+
+
+# ? GitLab Root Personal Access Token 
+
+GITLAB_ACCOUNT_ROOT_ACCESS_TOKEN_NAME: InitializeToken
+
+GITLAB_ACCOUNT_ROOT_ACCESS_TOKEN_VALUE: initialize
+
+### !
+
+
+
+# ?  GitLab Webservice Node Selector
+
+GITLAB_WERSERVICE_NODE_SELECTOR:
+
+  KEY: application
+
+  VALUE: gitlab
+
+
+
+### ! GitLab Persistent Volume Configuration
+
+# ? GitLab Global Pod Node Selector Configuration
+
+# kubernetes.io/hostname=master
+#moon 임시 설정 지우고 테스트 확인 필요
+GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY: node.kubernetes.io/instance-type
+
+GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE: rke2
+
+
+
+# ? GitLab Global Persistent Volume Node Affinity Configuration (Target Node Name)
+
+GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_KEY: kubernetes.io/hostname
+
+GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE: master
+
+
+
+GITLAB_PERSISTENT_REDIS_STORAGE_NODE_AFFINITY_KEY:  "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_KEY}}"
+
+GITLAB_PERSISTENT_POSTGRESQL_STORAGE_NODE_AFFINITY_KEY:  "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_KEY}}"
+
+GITLAB_PERSISTENT_MINIO_STORAGE_NODE_AFFINITY_KEY:  "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_KEY}}"
+
+GITLAB_PERSISTENT_GITALY_STORAGE_NODE_AFFINITY_KEY:  "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_KEY}}"
+
+# ? Already GitLab Data Volume Exist
+
+GITLAB_PERSISTENT_EXIST: no
+
+
+
+# ? GitLab Installation with Sample Source Code
+
+GITLAB_PERSISTENT_INCLUDE_SAMPLE_SOURCE: yes
+
+GITLAB_PERSISTENT_INCLUDE_ALL_GITOPS_SAMPLE_SOURCE: yes
+
+
+
+GITLAB_PERSISTENT_INCLUDE_JAVA_SAMPLE_SOURCE: yes
+
+
+
+GITLAB_PERSISTENT_INCLUDE_NODEJS_SAMPLE_SOURCE: yes
+
+
+
+GITLAB_PERSISTENT_INCLUDE_PYTHON_SAMPLE_SOURCE: yes
+
+
+
+GITLAB_PERSISTENT_INCLUDE_API_GATEWAY_SAMPLE_SOURCE: yes
+
+
+
+GITLAB_PERSISTENT_INCLUDE_GITOPS_SAMPLE_SOURCE: yes
+
+
+
+# ? GitLab Data Volume Path (Root)
+
+GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH: /data/gitlab-volume
+
+
+
+######################################## * 하위 변수들은 default values로 위치예정 * ########################################
+
+
+
+## * GitLab Data Volume Configuration (Redis)
+
+# ? GitLab Redis Pod Node Selector Configuration
+
+GITLAB_PERSISTENT_REDIS_POD_NODE_SELECTOR_KEY: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY}}"
+
+GITLAB_PERSISTENT_REDIS_POD_NODE_SELECTOR_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE}}"
+
+
+
+# ? GitLab Redis Persistent Volume Node Affinity Configuration (Target Node Name)
+
+GITLAB_PERSISTENT_REDIS_STORAGE_NODE_AFFINITY_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE}}"
+
+
+
+# ? GitLab Redis Volume Configuration
+
+GITLAB_PERSISTENT_REDIS_STORAGE_MOUNT_PATH: "{{GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH}}"
+
+GITLAB_PERSISTENT_REDIS_STORAGE_SIZE: 5Gi
+
+## *
+
+
+
+## * GitLab Data Volume Configuration (Gitaly)
+
+# ? GitLab Gitaly Pod Node Selector Configuration
+
+GITLAB_PERSISTENT_GITALY_POD_NODE_SELECTOR_KEY: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY}}"
+
+GITLAB_PERSISTENT_GITALY_POD_NODE_SELECTOR_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE}}"
+
+
+
+# ? GitLab Gitaly Persistent Volume Node Affinity Configuration (Target Node Name)
+
+GITLAB_PERSISTENT_GITALY_STORAGE_NODE_AFFINITY_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE}}"
+
+
+
+# ? GitLab Gitaly Volume Configuration
+
+GITLAB_PERSISTENT_GITALY_STORAGE_MOUNT_PATH: "{{GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH}}"
+
+GITLAB_PERSISTENT_GITALY_STORAGE_SIZE: 5Gi
+
+## *
+
+
+
+## * GitLab Data Volume Configuration (Postgresql)
+
+# ? GitLab Postgresql Pod Node Selector (Target Node)
+
+GITLAB_PERSISTENT_POSTGRESQL_POD_NODE_SELECTOR_KEY: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY}}"
+
+GITLAB_PERSISTENT_POSTGRESQL_POD_NODE_SELECTOR_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE}}"
+
+
+
+# ? GitLab Postgresql Persistent Volume Node Affinity Configuration (Target Node Name)
+
+GITLAB_PERSISTENT_POSTGRESQL_STORAGE_NODE_AFFINITY_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE}}"
+
+
+
+#############################################################################################################################
+
+
+
+# ? GitLab Postgresql Auth Configuration
+
+GITLAB_PERSISTENT_POSTGRESQL_ADMIN_PASSWORD: admin
+
+GITLAB_PERSISTENT_POSTGRESQL_USER_PASSWORD: user
+
+
+
+######################################## * 하위 변수들은 default values로 위치예정 * ########################################
+
+# ? GitLab Postgresql Volume Configuration
+
+GITLAB_PERSISTENT_POSTGRESQL_STORAGE_MOUNT_PATH: "{{GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH}}"
+
+GITLAB_PERSISTENT_POSTGRESQL_STORAGE_SIZE: 5Gi
+
+## *
+
+
+
+## * GitLab Data Volume Configuration (MinIO)
+
+# ? GitLab MinIO Pod Node Selector Configuration
+
+GITLAB_PERSISTENT_MINIO_POD_NODE_SELECTOR_KEY: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_KEY}}"
+
+GITLAB_PERSISTENT_MINIO_POD_NODE_SELECTOR_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_POD_NODE_SELECTOR_VALUE}}"
+
+
+
+# ? GitLab MinIO Persistent Volume Node Affinity Configuration (Target Node Name)
+
+GITLAB_PERSISTENT_MINIO_STORAGE_NODE_AFFINITY_VALUE: "{{GITLAB_PERSISTENT_GLOBAL_STORAGE_NODE_AFFINITY_VALUE}}"
+
+
+
+# ? GitLab MinIO Volume Configuration
+
+GITLAB_PERSISTENT_MINIO_STORAGE_MOUNT_PATH: "{{GITLAB_PERSISTENT_ROOT_STORAGE_MOUNT_PATH}}"
+
+GITLAB_PERSISTENT_MINIO_STORAGE_SIZE: 5Gi
+
+## *
+
+### !
+
+#############################################################################################################################
+
+
+
+### ! GitLab Runner
+
+GITLAB_RUNNER_INSTALLATION: true
+
+GITLAB_RUNNER_GITLAB_WEBSERVICE_DOMAIN: "gitlab.{{GITLAB_SUFFIX_DOMAIN}}"
+
+
+
+GITLAB_RUNNER_REPLICASE: 5

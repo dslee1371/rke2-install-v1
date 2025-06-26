@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jaeger-query
+  namespace: tracing
+  labels:
+    app.kubernetes.io/component: query
+    app.kubernetes.io/instance: jaeger
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/version: 1.53.0
+    helm.sh/chart: jaeger-3.1.2
+spec:
+  hosts:
+  - "jaeger.{{ DOMAIN_NAME }}"
+  gateways:
+     istio-system/ingress-gateway  
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: jaeger-query
+        port:
+          number: 80

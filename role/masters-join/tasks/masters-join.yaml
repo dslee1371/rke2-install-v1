@@ -1,0 +1,72 @@
+# Configure kernel params
+- name: 5.1. Copy Kernel Params
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+
+- name: 5.2. Apply Kernel Params
+  shell: |
+    sysctl -p /etc/sysctl.conf
+
+# Install_configure_rke2
+- name: 5.3. Uninstall RKE2
+  shell: rke2-uninstall.sh
+  ignore_errors: True 
+
+- name: 5.4. Install and set RKE2
+  shell: INSTALL_RKE2_TYPE=server INSTALL_RKE2_ARTIFACT_PATH="{{ LOCAL_PATH.BASE }}/packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ LOCAL_PATH.BASE }}/packages/rancher/install.sh
+
+## Configure Private registry
+- name: 5.5. Create directories(Docker, RKE2, containerd)
+  file:
+    path: "{{ item.DIR }}"
+    state: directory
+  with_items: "{{ REGISTRY_CONFIG }}"
+
+- name: 5.6. Set private repo for (Docker, RKE2, containerd)
+  copy:
+    dest: "{{ item.DIR }}/{{ item.FILE }}"
+    content: "{{ item.CONTENT }}"
+  with_items: "{{ REGISTRY_CONFIG }}"
+
+## RKE2 configuration file
+- name: 5.7. Make necessary directories
+  file:
+    path: /etc/rancher/rke2
+    state: directory
+
+- name: 5.8. Copy token
+  copy:
+    src: "{{ LOCAL_PATH.BASE }}/node-token/token"
+    dest: /root/node-token
+
+- name: 5.9. Display the cluster token from the file and emphasize it
+  shell: cat /root/node-token
+  register: node_token
+
+- name: 5.10. Add the content to the file
+  copy:
+    dest: /etc/rancher/rke2/config.yaml
+    content: |
+      server: https://{{ ALL_Servers[0].ip }}:9345
+      token: {{ node_token.stdout }} #TODO: 클러스터 토큰값 고정
+      write-kubeconfig-mode: "0644"
+      node-name: {{ inventory_hostname }}
+      tls-san:
+        - {{ ALL_Servers[0].ip }}
+      etcd-expose-metrics: true
+
+## Run RKE2 Service
+- name: 5.11. Enable and start the rke2-server service
+  systemd_service:
+    name: rke2-server
+    state: started
+    enabled: true
+  register: "check_rke2server_state"
+
+
+- name: 5.12. Print rke2-server service status
+  debug:
+    msg: "{{ check_rke2server_state }}"
+
+

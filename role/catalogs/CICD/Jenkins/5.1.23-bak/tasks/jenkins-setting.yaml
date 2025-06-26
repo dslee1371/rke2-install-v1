@@ -1,0 +1,28 @@
+# step2 : helm차트 추가 및 설정
+
+# 임시 디렉토리 추가 단계
+- name: "[ STEP 2 ] # 1. Make Temp Directory"
+  become: true
+  shell: mkdir -p {{TEMP_DIR_PATH}}
+
+# jenkins helm chart archive 압축 해제
+- name: "[ STEP 2 ] # 2. Unzip Jenkins Chart"
+  become: true
+  unarchive:
+    src: archives/helm/jenkins-{{JENKINS_VERSION}}.tgz
+    dest: "{{TEMP_DIR_PATH}}"
+
+# Jenkins helm chart override values Jinja template 복사
+- name: "[ STEP 2 ] # 3. Copy VALUES YAML file"
+  become: true
+  template: 
+    src: jenkins-values.yaml.j2
+    dest: "{{TEMP_DIR_PATH}}/jenkins/jenkins-values.yaml"
+
+# SA Jinja template file 복사
+- name: "[ STEP 2 ] # 4. Copy SA YAML file"
+  become: true
+  template: 
+    src: jenkins-sa.yaml.j2
+    dest: "{{TEMP_DIR_PATH}}/jenkins/jenkins-sa.yaml"
+

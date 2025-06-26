@@ -1,0 +1,54 @@
+---
+## jenkins 설치 ansible 
+
+# # 1. helm 확인 단계 //helm이미 설치되어있음
+# - name: "STEP 1. helm 확인 단계"
+#   import_tasks: helm-setting.yaml
+#   tags:
+#     - jenkins
+#     - helm-setting
+
+# 2. jenkins helm chart 저장소 추가 단계
+- name: "STEP 2. jenkins helm chart 저장소 추가 단계"
+  import_tasks: jenkins-setting.yaml
+  tags:
+    - jenkins
+    - helm-setting
+  when: inventory_hostname == 'rke2-control-node01'
+
+# 2-0. jenkins helm repo추가
+# 2-1. jenkins helm 내려받기
+
+# 3. 디렉토리 생성 및 권한부여
+- name: "STEP 3. directory create and grant permission"
+  import_tasks: jenkins-volume-setting.yaml
+  tags:
+    - jenkins
+    - helm-setting
+  when: inventory_hostname == JENKINS_DATA_NODE
+
+# 4. 설정 준비단계
+- name: "STEP 4. helm chart install"
+  import_tasks: jenkins-chart-install.yaml
+  tags:
+    - jenkins
+    - helm-setting
+  when: inventory_hostname == 'rke2-control-node01'
+# 4-1. namespace 만들기
+# 4-2. pv 추가 (persistentvolume, storageclass)
+# 4-3. sa 추가
+# 4-4. jenkins설정 override 할 파일 추가(jenkins-values.yaml)
+
+# 4. pv 연결할 폴더 생성 및 권한 추가
+
+# 5. helm 덮어쓰기 및 배포
+
+
+- name: "STEP 99. uninstall jenkins"
+  import_tasks: jenkins-uninstall.yaml
+  tags:
+    - jenkins
+    - helm-uninstall
+  when: 
+    - "'helm-uninstall' in ansible_run_tags"
+    - inventory_hostname == 'rke2-control-node01'

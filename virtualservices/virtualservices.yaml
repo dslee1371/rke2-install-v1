@@ -1,0 +1,95 @@
+- name: 8.22.1. Render and apply NeuVector VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/neuvector.yaml.j2"
+    dest: "/tmp/neuvector.yaml"
+  when: DEPLOY_NEUVECTOR | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.2. Render and apply Grafana VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/grafana.yaml.j2"
+    dest: "/tmp/grafana.yaml"
+  when: DEPLOY_PROMETHEUS | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.3. Render and apply Prometheus VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/prometheus.yaml.j2"
+    dest: "/tmp/prometheus.yaml"
+  when: DEPLOY_PROMETHEUS | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.4. Render and apply OpenSearch Dashboard VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/opensearch-dashboard.yaml.j2"
+    dest: "/tmp/opensearch-dashboard.yaml"
+  when: DEPLOY_OPENSEARCH | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.5. Render and apply ArgoCD VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/argocd.yaml.j2"
+    dest: "/tmp/argocd.yaml"
+  when: DEPLOY_ARGOCD | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.6. Render and apply Keycloak VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/keycloak.yaml.j2"
+    dest: "/tmp/keycloak.yaml"
+  when: DEPLOY_KEYCLOAK | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.7. Render and apply Longhorn VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/longhorn.yaml.j2"
+    dest: "/tmp/longhorn.yaml"
+  when: DEPLOY_LONGHORN | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.8. Render and apply Rancher UI VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/rancher-ui.yaml.j2"
+    dest: "/tmp/rancher-ui.yaml"
+  tags:
+    - virtualservices
+
+- name: 8.22.9. Render and apply jenkins VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/jenkins.yaml.j2"
+    dest: "/tmp/jenkins.yaml"
+  when: DEPLOY_JENKINS | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.10. Render and apply jaeger VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/jaeger.yaml.j2"
+    dest: "/tmp/jaeger.yaml"
+  when: DEPLOY_JAEGER | default(false) | bool
+  tags:
+    - virtualservices
+
+- name: 8.22.11. Render and apply Gitlab VirtualService template
+  template:
+    src: "{{ playbook_dir }}/virtualservices/gitlab.yaml.j2"
+    dest: "/tmp/gitlab.yaml"
+  when: DEPLOY_GITLAB | default(false) | bool
+  tags:
+    - virtualservices
+      
+- name: 8.22.10. Apply all rendered VirtualService YAML files
+  shell: |
+    for file in /tmp/*.yaml; do
+      kubectl apply -f $file
+    done
+  when: DEPLOY_ISTIO | default(false) | bool
+  tags:
+    - virtualservices

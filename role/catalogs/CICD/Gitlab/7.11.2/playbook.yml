@@ -1,0 +1,12 @@
+
+# !
+- hosts: all
+  gather_facts: true         # ! Don't config `false`\
+
+- hosts: all
+  gather_facts: false
+  roles:
+  - { role: role/gitlab }
+  tags:
+    - gitlab
+# !

@@ -1,0 +1,46 @@
+---
+- name: 8.1.1. Setting iscsi-initiator-utils RPM files
+  ansible.builtin.copy:
+    src: "files/iscsi-initiator-utils"
+    dest: "/tmp"
+
+- name: 8.1.2. Setting nfs-utils RPM files
+  ansible.builtin.copy:
+    src: "files/nfs-utils"
+    dest: "/tmp" 
+
+- name: 8.1.3. Install iscsi-initiator-utils 
+  ansible.builtin.shell: "rpm -ivh --force --nodeps /tmp/iscsi-initiator-utils/*.rpm"
+  args:
+    removes: "/tmp/iscsi-initiator-utils"  
+
+- name: 8.1.4. Install nfs-utils RPM 
+  ansible.builtin.shell: "rpm -ivh --force --nodeps /tmp/nfs-utils/*.rpm"
+  args:
+    removes: "/tmp/nfs-utils" 
+
+- name: 8.1.5. Start and enable iSCSI service on CentOS/RHEL
+  systemd:
+    name: iscsid
+    state: started
+    enabled: yes
+  when: ansible_os_family == "RedHat"
+
+- name: 8.1.6. Start and enable iSCSI service on Ubuntu/Debian
+  systemd:
+    name: open-iscsi
+    state: started
+    enabled: yes
+  when: ansible_os_family == "Debian"
+
+
+    #- name: Install iscsi-initiator-utils using yum
+    #  ansible.builtin.yum:
+    #    name: iscsi-initiator-utils
+    #    state: present
+    #
+    #- name: Install nfs-utils using yum
+    #  ansible.builtin.yum:
+    #    name: nfs-utils
+    #    state: present
+    #

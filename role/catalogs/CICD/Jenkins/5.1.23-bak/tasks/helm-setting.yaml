@@ -1,0 +1,51 @@
+# 1. helm 확인 단계
+
+# 1-1. helm 설치여부 확인
+
+# 1-2. 없으면 설치하기
+# 1-3. 있으면 넘어가기
+
+- name: "[ STEP 1 ] # 1. helm 설치여부 확인"
+  stat:
+    path: /usr/local/bin/helm
+  register: stat_helm_result
+
+- debug:
+    msg: "Helm already installed ..."
+  when: stat_helm_result.stat.exists
+
+- name: "[ STEP 1 ] # 2. Make Temp Directory"
+  become: true
+  shell: mkdir -p {{TEMP_DIR_PATH}}
+  when: not stat_helm_result.stat.exists
+
+- name: "[ STEP 1 ] # 3. Unzip Helm archieve"
+  become: true
+  unarchive:
+    src: archives/helm/helm-v3.15.0-linux-amd64.tar.gz
+    dest: "{{TEMP_DIR_PATH}}"
+  when: not stat_helm_result.stat.exists
+
+- name: "[ STEP 1 ] # 4. Move Helm Script"
+  become: true
+  shell: |
+    cd {{TEMP_DIR_PATH}}
+    mv linux-amd64/helm /usr/local/bin/helm
+  when: not stat_helm_result.stat.exists
+
+- name: "[ STEP 1 ] # 5. Clean Job"
+  become: true
+  shell: |
+    cd /home/{{ansible_user}}
+    rm -rf {{TEMP_DIR_PATH}}
+  when: not stat_helm_result.stat.exists
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+- name: 1. Install node
+  hosts: workers-group2
+  remote_user: "{{ USER }}"
+  become: True
+  gather_facts: True
+  roles:
+    -  role: ./role/node 
+       when: DEPLOY_RKE2
+  tags:
+    - multi-cluster
+    - single-cluster
+
+ 
+- name: 6. Join worker
+  hosts: workers-group2
+  remote_user: "{{ USER }}"
+  become: True
+  gather_facts: True
+  roles:
+    -  role: ./role/workers 
+       when: DEPLOY_RKE2
+  tags:
+    - multi-cluster
+    - single-cluster
+
+- name: 7. Label workers
+  hosts: workers-group2 
+  remote_user: "{{ USER }}"
+  become: True
+  gather_facts: True
+  roles:
+    -  role: ./role/labels 
+       when: DEPLOY_RKE2
+  tags:
+    - multi-cluster
+    - single-cluster
+

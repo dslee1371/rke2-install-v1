@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: neuvector-webui
+  namespace: neuvector  # NeuVector가 설치된 네임스페이스
+spec:
+  gateways:
+    - istio-system/istio-gateway  # Istio Gateway의 네임스페이스와 이름
+  hosts:
+    - "neuvector.cnstudio.kt.com"  # Ingress에서 지정된 호스트 이름
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: neuvector-service-webui
+            port:
+              number: 8443

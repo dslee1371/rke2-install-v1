@@ -1,0 +1,4 @@
+---
+
+- name: deploy jenkins
+  ansible.builtin.include_tasks: jenkins.yaml

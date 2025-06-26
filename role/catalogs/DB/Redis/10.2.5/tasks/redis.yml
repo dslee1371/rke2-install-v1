@@ -1,0 +1,19 @@
+---
+- name: 8.20.1. Add Helm repository
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo add cnstudio {{ HELM_REPO_URL }} --username admin --password admin1234"
+  ignore_errors: yes
+  
+- name: 8.20.2. Update Helm repositories
+  ansible.builtin.shell:
+    cmd: "/usr/local/bin/helm repo update"
+
+- name: 8.20.3. Install redis-cluster
+  ansible.builtin.shell:
+    cmd: |
+      /usr/local/bin/helm install redis-cluster \
+      --namespace redis cnstudio/redis-cluster --version {{ REDIS_VERSION }} \
+      --create-namespace \
+      --set nodeSelector.db=true \
+      --set password=admin1234 \
+      --set persistence.size=20Gi
