@@ -10,7 +10,7 @@
 ## Copy kubeconfig file
 - name: 4.2. Copy kubeconfig file
   copy:
-    src: "{{ LOCAL_PATH.BASE }}/kubeconfig"
+    src: "{{ playbook_dir }}/../kubeconfig"
     dest: "{{ item  }}"
   with_items:
     - $HOME/.kube/config
@@ -18,7 +18,7 @@
 
 ## Copy kubectl file
 - name: 4.3. Copy kubectl file
-  shell: sudo cp {{ LOCAL_PATH.BASE }}//kubectl /usr/bin/kubectl
+  shell: sudo cp {{ playbook_dir }}/..//kubectl /usr/bin/kubectl
 
 - name: 4.4. Chmod
   shell: sudo chmod 775 /usr/bin/kubectl
@@ -26,14 +26,14 @@
 ## Extract k9s, helm
 - name: 4.5. Create directory for temp 
   file:
-    path: "{{ LOCAL_PATH.BASE }}/packages/{{ item.DIR }}/tmp"
+    path: "{{ playbook_dir }}/../packages/{{ item.DIR }}/tmp"
     state: directory
   with_items:
     - { DIR: 'tools' }
 - name: 4.6. Extract k9s, helm
   unarchive:
-    src: "{{ LOCAL_PATH.BASE }}/packages/{{ item.DIR }}/{{ item.FILE_NAME }}"
-    dest: "{{ LOCAL_PATH.BASE }}/packages/{{ item.DIR }}/tmp"
+    src: "{{ playbook_dir }}/../packages/{{ item.DIR }}/{{ item.FILE_NAME }}"
+    dest: "{{ playbook_dir }}/../packages/{{ item.DIR }}/tmp"
     remote_src: yes
   with_items:
     - { DIR: 'tools', FILE_NAME: 'helm-v3.15.1-linux-amd64.tar.gz' }
@@ -41,12 +41,12 @@
 
 ##  Copy files for k9s
 - name: 4.7. Copy file for k9s
-  shell: sudo cp {{ LOCAL_PATH.BASE }}/packages/tools/tmp/k9s /usr/local/bin
+  shell: sudo cp {{ playbook_dir }}/../packages/tools/tmp/k9s /usr/local/bin
 
 ## Copy file for helm
 - name: 4.8. Copy file for helm
-  shell: sudo cp {{ LOCAL_PATH.BASE }}/packages/tools/tmp/linux-amd64/helm /usr/local/bin
+  shell: sudo cp {{ playbook_dir }}/../packages/tools/tmp/linux-amd64/helm /usr/local/bin
 
 ##  Copy files for yq
 - name: 4.9. Copy file for yq
-  shell: sudo cp {{ LOCAL_PATH.BASE }}/packages/tools/yq /usr/local/bin
+  shell: sudo cp {{ playbook_dir }}/../packages/tools/yq /usr/local/bin

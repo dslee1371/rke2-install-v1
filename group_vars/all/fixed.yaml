@@ -88,10 +88,10 @@ REGISTRY_CONFIG:
         [plugins."io.containerd.grpc.v1.cri".registry.configs."{{ REGISTRY_URL }}:{{ REGISTRY_PORT }}".tls]
           insecure_skip_verify = true
 CONFIG_TOOL_FILES_M:
-- {SRC: "{{ LOCAL_PATH.BASE }}/packages/k9s/k9s", DEST: k9s} # k9s
-- {SRC: "{{ LOCAL_PATH.BASE }}/packages/default/jq-linux-amd64", DEST: jq} # jq
-- {SRC: "{{ LOCAL_PATH.BASE }}/packages/helm/linux-amd64/helm", DEST: helm} # helm
+- {SRC: "{{ playbook_dir }}/../packages/k9s/k9s", DEST: k9s} # k9s
+- {SRC: "{{ playbook_dir }}/../packages/default/jq-linux-amd64", DEST: jq} # jq
+- {SRC: "{{ playbook_dir }}/../packages/helm/linux-amd64/helm", DEST: helm} # helm
 CONFIG_TOOL_FILES_W:
-- {SRC: "{{ LOCAL_PATH.BASE }}/packages/k9s/k9s", DEST: k9s} # k9s
-- {SRC: "{{ LOCAL_PATH.BASE }}/packages/default/jq-linux-amd64", DEST: jq} # jq
+- {SRC: "{{ playbook_dir }}/../packages/k9s/k9s", DEST: k9s} # k9s
+- {SRC: "{{ playbook_dir }}/../packages/default/jq-linux-amd64", DEST: jq} # jq
 

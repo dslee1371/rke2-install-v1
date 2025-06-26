@@ -54,6 +54,6 @@
 - name: 8.21.8. haproxy change ingress to istio
   ansible.builtin.shell:
     cmd: |
-      {{ LOCAL_PATH.BASE }}/haproxy/select-haproxy.cfg istio
+      {{ playbook_dir }}/../haproxy/select-haproxy.cfg istio
   tags:
     - catalog_istio

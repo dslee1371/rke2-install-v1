@@ -14,7 +14,7 @@
   ignore_errors: True
 
 - name: 6.4. Install and set RKE2
-  shell: INSTALL_RKE2_TYPE=agent INSTALL_RKE2_ARTIFACT_PATH="{{ LOCAL_PATH.BASE }}/packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ LOCAL_PATH.BASE }}/packages/rancher/install.sh
+  shell: INSTALL_RKE2_TYPE=agent INSTALL_RKE2_ARTIFACT_PATH="{{ playbook_dir }}/../packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ playbook_dir }}/../packages/rancher/install.sh
 
 ## Configure Private registry
 - name: 6.5. Create directories(Docker, RKE2, containerd)
@@ -37,7 +37,7 @@
 
 - name: 6.8. Copy token
   copy:
-    src: "{{ LOCAL_PATH.BASE }}/node-token/token"
+    src: "{{ playbook_dir }}/../node-token/token"
     dest: /root/node-token
 
 - name: 6.9. Display the cluster token from the file and emphasize it

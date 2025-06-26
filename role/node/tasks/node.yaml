@@ -33,8 +33,8 @@
 # Copy install files
 - name: 2.6. Copy install files
   copy:
-    src: "{{ LOCAL_PATH.BASE }}/packages/{{ item }}" 
-    dest: "{{ LOCAL_PATH.BASE }}/packages"
+    src: "{{ playbook_dir }}/../packages/{{ item }}" 
+    dest: "{{ playbook_dir }}/../packages"
   with_items:
     - "rke2-required"
     - "rancher"
@@ -43,7 +43,7 @@
 # Install the required packages
 - name: 2.7. Register packages
   find:
-    paths: "{{ LOCAL_PATH.BASE }}/packages/rke2-required"
+    paths: "{{ playbook_dir }}/../packages/rke2-required"
     patterns: "*.rpm"
   register: rpm_files  
 
@@ -53,7 +53,7 @@
     state: present
     disable_gpg_check: yes
   with_items:
-    - " {{ LOCAL_PATH.BASE }}/packages/rke2-required/container-selinux-2.229.0-2.module+el8.10.0+1825+623b0c20.noarch.rpm"
+    - " {{ playbook_dir }}/../packages/rke2-required/container-selinux-2.229.0-2.module+el8.10.0+1825+623b0c20.noarch.rpm"
 
 ## Swap off
 - name: 2.9. Swap off

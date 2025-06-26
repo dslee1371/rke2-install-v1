@@ -2,7 +2,7 @@
 ########## hosts info #################
 HOST_IP: "{{ansible_host}}"
 
-LOCAL_USER_HOME: "{{ LOCAL_PATH.BASE }}"
+LOCAL_USER_HOME: "{{ playbook_dir }}/.."
 
 ########## glb_ingress_namespace #################
 GLB_INGRESS_NAMESPACE: "kube-system"

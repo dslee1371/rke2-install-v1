@@ -13,7 +13,7 @@
   ignore_errors: True
 
 - name: 3.4. Install and set RKE2
-  shell: INSTALL_RKE2_TYPE=server INSTALL_RKE2_ARTIFACT_PATH="{{ LOCAL_PATH.BASE }}/packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ LOCAL_PATH.BASE }}/packages/rancher/install.sh
+  shell: INSTALL_RKE2_TYPE=server INSTALL_RKE2_ARTIFACT_PATH="{{ playbook_dir }}/../packages/rancher" INSTALL_RKE2_SYSTEM_DEFAULT_REGISTRY="{{ REGISTRY_URL }}{{ ':' }}5000" sh {{ playbook_dir }}/../packages/rancher/install.sh
 
 ## Configure Private registry
 - name: 3.5. Create directories(Docker, RKE2, containerd)
@@ -81,18 +81,18 @@
 - name: 3.13. Copy node token from the master to the controller
   fetch:
     src: "/var/lib/rancher/rke2/server/token"
-    dest: "{{ LOCAL_PATH.BASE }}/node-token/token"
+    dest: "{{ playbook_dir }}/../node-token/token"
     flat: yes
 
 - name: 3.14. Copy kube config file from the master to the controller
   fetch:
     src: $HOME/.kube/config
-    dest: "{{ LOCAL_PATH.BASE }}/kubeconfig"
+    dest: "{{ playbook_dir }}/../kubeconfig"
     flat: yes
 
 - name: 3.15. Copy kubectl file from master to the controller
   fetch:
     src: /var/lib/rancher/rke2/bin/kubectl
-    dest: "{{ LOCAL_PATH.BASE }}/kubectl"
+    dest: "{{ playbook_dir }}/../kubectl"
     flat: yes
 

@@ -23,7 +23,7 @@
       shell: kubectl create ns {{GITLAB_METADATA_NAMESPACE | default(GITLAB_DEFAULT_METADATA_NAMESPACE, true)}}
 
 #- name: "[ STEP 3 ] # 2. ===== if istio install, Create VirtualService  ====="
-#  shell: kubectl apply -f {{ LOCAL_PATH.BASE }}/virtualservices/gitlab-vs.yaml
+#  shell: kubectl apply -f {{ playbook_dir }}/../virtualservices/gitlab-vs.yaml
 #  when:  DEPLOY_ISTIO 
   
 - name: "8.13.2.2. ===== Install gitlab helm chart with override values ====="
